@@ -31,17 +31,19 @@ The API will be running on http://localhost:3000 by default. You can use tools l
 
 ## API Endpoints
 ### Tasks
-Mark a Task as Completed
+
+
+#### Mark a Task as Completed
 POST /tasks/complete
 
-#### Request Body:
+##### Request Body:
    ```json
    {
     "userId": "123", 
     "taskName": "Complete API documentation"
    }
    ```
-#### Response:
+##### Response:
 ```json
   {
    "success": true, 
@@ -50,10 +52,10 @@ POST /tasks/complete
   }
 ```
 
-### Search Tasks
+#### Search Tasks
 GET /tasks/search
 
-#### Query Parameters:
+##### Query Parameters:
 
 userId (optional)
 
@@ -61,7 +63,7 @@ startDate (optional)
 
 endDate (optional)
 
-#### Response:
+##### Response:
 
 ```json
 {
@@ -75,11 +77,11 @@ endDate (optional)
 }
 ```
 
-### Search Tasks with User Information
+#### Search Tasks with User Information
 
 GET /tasks/searchWithUser
 
-#### Query Parameters:
+##### Query Parameters:
 
 userId (optional)
 
@@ -87,7 +89,7 @@ startDate (optional)
 
 endDate (optional)
 
-#### Response:
+##### Response:
 ```json
 {
   "success": true,
@@ -101,10 +103,10 @@ endDate (optional)
 }
 ```
 
-### Delete a Task
+#### Delete a Task
 DELETE /tasks/delete
 
-#### Request Body:
+##### Request Body:
 ```json
 {
   "userId": "123",
@@ -112,13 +114,157 @@ DELETE /tasks/delete
 }
 ```
 
-#### Response:
+##### Response:
 ```json
 {
   "success": true,
   "message": "Task deleted successfully"
 }
 ```
+
+### Users
+#### Create a New User
+POST /users/create
+
+##### Request Body:
+```json
+{
+  "userId": "123",
+  "fullName": "John Doe",
+  "email": "john.doe@example.com"
+}
+```
+
+##### Response:
+```json
+{
+  "success": true,
+  "message": "User added successfully",
+  "data": {
+    "userId": "123",
+    "fullName": "John Doe",
+    "email": "john.doe@example.com"
+  }
+}
+```
+
+#### Get User by Name
+GET /users/getUserByName/name/:fullName
+
+##### Response:
+```json
+{
+  "success": true,
+  "data": { /* user data */ }
+}
+```
+
+
+#### Get User by ID
+GET /users/getUserById/:userId
+
+##### Response:
+```json
+{
+  "success": true,
+  "data": { /* user data */ }
+}
+```
+
+#### Update a User
+PUT /users/update/:userId
+
+##### Request Body:
+```json
+{
+  "fullName": "Jane Doe",
+  "email": "jane.doe@example.com"
+}
+```
+
+##### Response:
+```json
+{
+  "success": true,
+  "message": "User updated successfully",
+  "data": {
+    "userId": "123",
+    "fullName": "Jane Doe",
+    "email": "jane.doe@example.com"
+  }
+}
+```
+
+#### Delete a User (with CASCADE)
+DELETE /users/delete/:userId
+
+Response:
+
+```json
+{
+  "success": true,
+  "message": "User and all associated tasks deleted successfully"
+}
+```
+
+#### Delete a User (Manually)
+DELETE /users/deleteManuallyUser/:userId
+
+##### Response:
+```json
+{
+  "success": true,
+  "message": "User and all associated tasks deleted successfully"
+}
+```
+
+#### Delete Only User
+DELETE /users/deleteOnlyUser/:userId
+
+#####  Response:
+```json
+{
+  "success": true,
+  "message": "User deleted successfully"
+}
+```
+
+### Zmanim
+#### Fetch Zmanim
+GET /zmanim
+
+##### Response:
+```json
+{
+  "success": true,
+  "data": { /* zmanim data */ },
+  "dateRange": {
+    "from": "2023-10-01",
+    "to": "2023-10-02"
+  }
+}
+```
+
+### Configuration
+The API requires a MySQL database. Update the config/config.js file with your database credentials:
+
+```javascript
+module.exports = {
+  database: {
+    host: 'localhost',
+    user: 'root',
+    password: 'yourpassword',
+    database: 'task_management',
+    port: 3306
+  }
+};
+```
+
+### License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+
+
 
 
 
