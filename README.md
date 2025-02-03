@@ -35,9 +35,14 @@ Mark a Task as Completed
 POST /tasks/complete
 
 #### Request Body:
-   ```{"userId": "123", "taskName": "Complete API documentation"}```
+   ```json
+   "userId": "123", 
+   "taskName": "Complete API documentation"
+   ```
 #### Response:
-```{"success": true, "data": { /* task data */ }, "message": "Task marked as completed successfully"}```
+```json
+  "success": true, "data": { /* task data */ }, "message": "Task marked as completed successfully"
+```
 
 ### Search Tasks
 GET /tasks/search
@@ -51,7 +56,8 @@ startDate (optional)
 endDate (optional)
 
 #### Response:
-```{
+
+```json
   "success": true,
   "data": [ /* array of tasks */ ],
   "count": 5,
@@ -59,8 +65,7 @@ endDate (optional)
     "userId": "123",
     "startDate": "2023-10-01",
     "endDate": "2023-10-31"
-  }
-}```
+```
 
 ### Search Tasks with User Information
 
