@@ -6,6 +6,7 @@ const mysql = require('mysql');
 const config = require('./config/config');
 const tasksRouter = require('./routes/tasks');
 const zmanimRouter = require('./routes/zmanim');
+const userRoute = require('./routes/userRoute');
 const connection = require('./config/database');
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(express.json());
 app.use('/zmanim', zmanimRouter);
 app.use('/tasks', tasksRouter);
 
+app.use('/user', userRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

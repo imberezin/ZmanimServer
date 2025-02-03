@@ -58,42 +58,46 @@ router.get('/search', async (req, res) => {
     try {
         const { userId, startDate, endDate } = req.query;
 
-        if (!userId && !startDate || !userId && !endDate) {
+        // Validate input
+        if (!userId && !startDate && !endDate) {
             return res.status(400).json({
                 success: false,
                 error: 'Missing required field',
-                message: 'userId and startDate and endDate are required'
+                message: 'At least one of userId, startDate, or endDate is required'
             });
         }
 
-        let query = ''
+        let query = 'SELECT * FROM tasks';
         const params = [];
+        const conditions = [];
 
-        if (userId){
-            query = 'SELECT * FROM tasks WHERE userId = ?';
+        // Add userId condition
+        if (userId) {
+            conditions.push('userId = ?');
             params.push(userId);
-
-        }else{
-            query = 'SELECT * FROM tasks WHERE';
-
-        }
-        if (startDate || endDate) {
-            if (startDate) {
-                if (userId){
-                query += ' AND date >= ?';
-                }else{
-                    query += ' date >= ?';
-                }
-                params.push(startDate);
-            }
-            if (endDate) {
-                query += ' AND date <= ?';
-                params.push(endDate);
-            }
         }
 
+        // Add startDate condition
+        if (startDate) {
+            conditions.push('date >= ?');
+            params.push(startDate);
+        }
+
+        // Add endDate condition
+        if (endDate) {
+            conditions.push('date <= ?');
+            params.push(endDate);
+        }
+
+        // Combine conditions into the query
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        // Add sorting
         query += ' ORDER BY date DESC';
 
+        // Execute the query
         connection.query(query, params, (error, results) => {
             if (error) {
                 console.error('Error searching tasks:', error);
@@ -109,7 +113,87 @@ router.get('/search', async (req, res) => {
                 data: results,
                 count: results.length,
                 query: {
-                    userId,
+                    userId: userId || 'none',
+                    startDate: startDate || 'none',
+                    endDate: endDate || 'none'
+                }
+            });
+        });
+
+    } catch (error) {
+        console.error('Error searching tasks:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to search tasks',
+            message: error.message
+        });
+    }
+});
+
+router.get('/searchWithUser', async (req, res) => {
+    try {
+        const { userId, startDate, endDate } = req.query;
+
+        // Validate input
+        if (!userId && !startDate && !endDate) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required field',
+                message: 'At least one of userId, startDate, or endDate is required'
+            });
+        }
+
+        let query = `
+            SELECT tasks.*, Users.fullName, Users.email
+            FROM tasks
+            LEFT JOIN Users ON tasks.userId = Users.userId
+        `;
+        const params = [];
+        const conditions = [];
+
+        // Add userId condition
+        if (userId) {
+            conditions.push('tasks.userId = ?');
+            params.push(userId);
+        }
+
+        // Add startDate condition
+        if (startDate) {
+            conditions.push('tasks.date >= ?');
+            params.push(startDate);
+        }
+
+        // Add endDate condition
+        if (endDate) {
+            conditions.push('tasks.date <= ?');
+            params.push(endDate);
+        }
+
+        // Combine conditions into the query
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        // Add sorting
+        query += ' ORDER BY tasks.date DESC';
+
+        // Execute the query
+        connection.query(query, params, (error, results) => {
+            if (error) {
+                console.error('Error searching tasks:', error);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Failed to search tasks',
+                    message: error.message
+                });
+            }
+
+            res.json({
+                success: true,
+                data: results,
+                count: results.length,
+                query: {
+                    userId: userId || 'none',
                     startDate: startDate || 'none',
                     endDate: endDate || 'none'
                 }

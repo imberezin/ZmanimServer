@@ -14,3 +14,4 @@ This is a Zmanim and Task Management API built with Express.js and Azure SQL Dat
 - **GET /zmanim**: Fetch Zmanim data.
 - **POST /tasks/complete**: Mark a task as completed.
 - **GET /tasks/search**: Search tasks by user and date range.
+- **DELETE /tasks/delete**: delete tasks by user id and task it.
