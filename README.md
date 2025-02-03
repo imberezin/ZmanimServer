@@ -36,18 +36,24 @@ POST /tasks/complete
 
 #### Request Body:
    ```json
-   "userId": "123", 
-   "taskName": "Complete API documentation"
+   {
+    "userId": "123", 
+    "taskName": "Complete API documentation"
+   }
    ```
 #### Response:
 ```json
-  "success": true, "data": { /* task data */ }, "message": "Task marked as completed successfully"
+  {
+   "success": true, 
+    "data": { /* task data */ }, 
+    "message": "Task marked as completed successfully"
+  }
 ```
 
 ### Search Tasks
 GET /tasks/search
 
-Query Parameters:
+#### Query Parameters:
 
 userId (optional)
 
@@ -58,6 +64,7 @@ endDate (optional)
 #### Response:
 
 ```json
+{
   "success": true,
   "data": [ /* array of tasks */ ],
   "count": 5,
@@ -65,9 +72,55 @@ endDate (optional)
     "userId": "123",
     "startDate": "2023-10-01",
     "endDate": "2023-10-31"
+}
 ```
 
 ### Search Tasks with User Information
+
+GET /tasks/searchWithUser
+
+#### Query Parameters:
+
+userId (optional)
+
+startDate (optional)
+
+endDate (optional)
+
+#### Response:
+```json
+{
+  "success": true,
+  "data": [ /* array of tasks with user info */ ],
+  "count": 5,
+  "query": {
+    "userId": "123",
+    "startDate": "2023-10-01",
+    "endDate": "2023-10-31"
+  }
+}
+```
+
+### Delete a Task
+DELETE /tasks/delete
+
+#### Request Body:
+```json
+{
+  "userId": "123",
+  "taskId": "456"
+}
+```
+
+#### Response:
+```json
+{
+  "success": true,
+  "message": "Task deleted successfully"
+}
+```
+
+
 
 
 
