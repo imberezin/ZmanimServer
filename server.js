@@ -7,6 +7,7 @@ const config = require('./config/config');
 const tasksRouter = require('./routes/tasks');
 const zmanimRouter = require('./routes/zmanim');
 const userRoute = require('./routes/userRoute');
+const loginRouter = require('./routes/loginRouter'); // Path to your login route file
 const connection = require('./config/database');
 const app = express();
 
@@ -34,7 +35,7 @@ app.use(express.json());
 // Routes
 app.use('/zmanim', zmanimRouter);
 app.use('/tasks', tasksRouter);
-
+app.use('/api', loginRouter);
 app.use('/user', userRoute);
 
 // Error handling middleware

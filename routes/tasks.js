@@ -4,6 +4,7 @@ const config = require('../config/config');
 const connection = require('../config/database');
 
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware'); // Path to your middleware
 
 // const connection = mysql.createConnection({
 //     host: config.database.host,
@@ -14,7 +15,7 @@ const router = express.Router();
 // });
 
 
-router.post('/complete', async (req, res) => {
+router.post('/complete', authMiddleware, async (req, res) => {
     try {
         const { userId, taskName } = req.body;
 

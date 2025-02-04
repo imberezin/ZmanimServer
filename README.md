@@ -131,7 +131,8 @@ POST /users/create
 {
   "userId": "123",
   "fullName": "John Doe",
-  "email": "john.doe@example.com"
+  "email": "john.doe@example.com",
+  "password": "securepassword123"
 }
 ```
 
@@ -228,6 +229,38 @@ DELETE /users/deleteOnlyUser/:userId
   "message": "User deleted successfully"
 }
 ```
+
+#### Update a User
+PUT /users/update/:userId
+
+##### Request Body:
+```json
+{
+  "fullName": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "password": "newsecurepassword123"
+}
+```
+
+##### Response:
+```json
+{
+  "success": true,
+  "message": "User updated successfully",
+  "data": {
+    "userId": "123",
+    "fullName": "Jane Doe",
+    "email": "jane.doe@example.com"
+  }
+}
+```
+
+
+
+
+
+
+
 
 ### Zmanim
 #### Fetch Zmanim

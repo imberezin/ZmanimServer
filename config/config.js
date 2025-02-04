@@ -42,7 +42,15 @@ const config = {
     cors: {
         origin: process.env.CORS_ORIGIN || '*',
         methods: ['GET', 'POST']
-    }
+    },
+    jwtSecret: 'Israel_Berezin_App_123!', // Replace with a strong, random key
+    jwtExpiration: '24h' // Token expiration time (e.g., 1 hour)
+
 };
 
 module.exports = config;
+
+// module.exports = {
+//     jwtSecret: 'your_secret_key_here', // Replace with a strong, random key
+//     jwtExpiration: '1h' // Token expiration time (e.g., 1 hour)
+// };

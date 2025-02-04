@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const config = require('../config/config');
 const connection = require('../config/database');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
@@ -9,21 +10,24 @@ const router = express.Router();
 // Add a new user
 router.post('/create', async (req, res) => {
     try {
-        const { userId, fullName, email } = req.body;
+        const { userId, fullName, email, password } = req.body;
 
         // Validate input
-        if (!userId || !fullName || !email) {
+        if (!userId || !fullName || !email || !password) {
             return res.status(400).json({
                 success: false,
                 error: 'Missing required fields',
-                message: 'userId, fullName, and email are required'
+                message: 'userId, fullName, ,password and email are required'
             });
         }
 
-        // Insert new user into the database
-        const query = 'INSERT INTO Users (userId, fullName, email) VALUES (?, ?, ?)';
-        const params = [userId, fullName, email];
+        const saltRounds = 10; // Number of salt rounds (recommended: 10)
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+        // Insert new user into the database
+        const query = 'INSERT INTO Users (userId, fullName, email, password) VALUES (?, ?, ?, ?)';
+        const params = [userId, fullName, email, hashedPassword];
+        
         connection.query(query, params, (error, results) => {
             if (error) {
                 console.error('Error adding user:', error);
@@ -342,5 +346,59 @@ router.delete('/deleteOnlyUser/:userId', async (req, res) => {
         });
     }
 });
+
+router.put('/updatePassword/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { newPassword } = req.body;
+
+        if (!newPassword) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required field',
+                message: 'New password is required'
+            });
+        }
+
+        // Hash the new password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update the password in the database
+        const query = 'UPDATE Users SET password = ? WHERE userId = ?';
+        connection.query(query, [hashedPassword, userId], (error, results) => {
+            if (error) {
+                console.error('Error updating password:', error);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Failed to update password',
+                    message: error.message
+                });
+            }
+
+            if (results.affectedRows === 0) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'User not found',
+                    message: `No user found with ID: ${userId}`
+                });
+            }
+
+            res.json({
+                success: true,
+                message: 'Password updated successfully'
+            });
+        });
+
+    } catch (error) {
+        console.error('Error updating password:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update password',
+            message: error.message
+        });
+    }
+});
+
 
 module.exports = router;
